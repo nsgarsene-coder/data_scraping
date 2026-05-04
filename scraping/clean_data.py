@@ -1,10 +1,13 @@
+
 import os
 import pandas as pd
 
 # ===============================
 # 1. Chargement du fichier
 # ===============================
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+if __name__ == "__main__":
+
+ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 csv_path = os.path.join(
     BASE_DIR,
@@ -104,7 +107,7 @@ df_clean = clean_dataframe(df, colonnes_detectees)
 # ===============================
 clean_csv_path = os.path.join(
     BASE_DIR,
-    "amazon_concurrents_20260504_174926_clean.csv"
+    "amazon_concurrents_clean.csv"
 )
 
 df_clean.to_csv(clean_csv_path, index=False, encoding="utf-8")
@@ -115,3 +118,14 @@ pd.set_option("display.max_columns", None)
 pd.set_option("display.width", 120)
 
 print(df_clean.head())
+EXPORT_DIR = os.path.join(BASE_DIR, "..", "exports")
+os.makedirs(EXPORT_DIR, exist_ok=True)
+
+clean_csv_path = os.path.join(
+    EXPORT_DIR,
+    "amazon_concurrents_clean.csv"
+)
+
+df_clean.to_csv(clean_csv_path, index=False, encoding="utf-8")
+
+print(f"\n CSV clean exporté dans : {clean_csv_path}")
