@@ -69,3 +69,49 @@ colonnes_detectees = detect_column_types(df)
 print(" Colonnes détectées :\n")
 for col, col_type in colonnes_detectees.items():
     print(f"{col} ➜ {col_type}")
+def clean_dataframe(df, column_types):
+    df_clean = df.copy()
+
+    for col, col_type in column_types.items():
+
+        if col_type == "numerique":
+            df_clean[col] = (
+                df_clean[col]
+                .astype(str)
+                .str.replace(",", ".")
+                .str.replace(r"[^\d\.]", "", regex=True)
+            )
+            df_clean[col] = pd.to_numeric(df_clean[col], errors="coerce")
+
+        elif col_type == "date":
+            df_clean[col] = pd.to_datetime(df_clean[col], errors="coerce")
+
+        elif col_type == "texte":
+            df_clean[col] = (
+                df_clean[col]
+                .astype(str)
+                .str.strip()
+            )
+
+    return df_clean
+# ===============================
+# 5. Nettoyage
+# ===============================
+df_clean = clean_dataframe(df, colonnes_detectees)
+
+# ===============================
+# 6. Export du CSV clean
+# ===============================
+clean_csv_path = os.path.join(
+    BASE_DIR,
+    "amazon_concurrents_20260504_174926_clean.csv"
+)
+
+df_clean.to_csv(clean_csv_path, index=False, encoding="utf-8")
+
+print("\n CSV CLEAN créé avec succès :")
+print(clean_csv_path)
+pd.set_option("display.max_columns", None)
+pd.set_option("display.width", 120)
+
+print(df_clean.head())
